@@ -5,5 +5,17 @@
   "main": "index.js",
   "repository": "https://github.com/NoelJFreitas/node-typescript-api.git",
   "author": "Noel Freitas <noel@adderesolutions.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "yarn build && node dist/src/index.js"
+  },
+  "devDependencies": {
+    "@types/module-alias": "^2.0.2",
+    "@types/node": "^20.7.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "module-alias": "^2.2.3"
+  }
 }
