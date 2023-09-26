@@ -1,0 +1,9 @@
+{
+  "name": "node-typescript-api",
+  "version": "1.0.0",
+  "description": "typescript node api ",
+  "main": "index.js",
+  "repository": "https://github.com/NoelJFreitas/node-typescript-api.git",
+  "author": "Noel Freitas <noel@adderesolutions.com>",
+  "license": "MIT"
+}
