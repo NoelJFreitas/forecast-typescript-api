@@ -7,7 +7,7 @@
     "resources": {
       "StormGlass": {
         "apiUrl": "https://api.stormglass.io/v2",
-        "apiToken": "do-not-hard-code"
+        "apiToken": "1cdf4e90-0166-11ee-a26f-0242ac130002-1cdf4ef4-0166-11ee-a26f-0242ac130002"
       }
     }
   }
