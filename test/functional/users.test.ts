@@ -2,11 +2,11 @@ import { User } from '@src/models/user';
 import AuthService from '@src/services/auth';
 
 describe('users functional tests', () => {
-  describe('When creating a new user', () => {
-    beforeEach(async () => {
-      await User.deleteMany({});
-    });
+  beforeEach(async () => {
+    await User.deleteMany({});
+  });
 
+  describe('When creating a new user', () => {
     it('should successfully create a new user with encrypted password', async () => {
       const newUser = {
         name: 'John Doe',
@@ -14,7 +14,8 @@ describe('users functional tests', () => {
         password: '1234',
       };
 
-      const response = await global.testRequest.post('/users').send();
+      const response = await global.testRequest.post('/users').send(newUser);
+
       expect(response.status).toBe(201);
       await expect(
         AuthService.comparePasswords(newUser.password, response.body.password)
@@ -56,6 +57,53 @@ describe('users functional tests', () => {
       expect(response.body).toEqual({
         code: 409,
         error: 'User validation failed: email: already exists in the database.',
+      });
+    });
+  });
+
+  describe('when authentication a user', () => {
+    it('should generate a token for a valid user', async () => {
+      const newUser = {
+        name: 'John Doe',
+        email: 'john.doe@gmail.com',
+        password: '1234',
+      };
+
+      await new User(newUser).save();
+      const response = await global.testRequest
+        .post('/users/authenticate')
+        .send({ email: newUser.email, password: newUser.password });
+
+      expect(response.body).toEqual(
+        expect.objectContaining({ token: expect.any(String) })
+      );
+    });
+
+    it('should return UNAUTHORIZED if the user with the give email is not found', async () => {
+      const response = await global.testRequest
+        .post('/users/authenticate')
+        .send({ email: 'some-email@gmail.com', password: '123' });
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({ code: 401, error: 'user not found' });
+    });
+
+    it('should return UNAUTHORIZED if the user is found but the password does not match', async () => {
+      const newUser = {
+        name: 'John Doe',
+        email: 'john.doe@gmail.com',
+        password: '1234',
+      };
+
+      await new User(newUser).save();
+      const response = await global.testRequest
+        .post('/users/authenticate')
+        .send({ email: 'john.doe@gmail.com', password: 'wrong password' });
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({
+        code: 401,
+        error: 'password does not match',
       });
     });
   });
